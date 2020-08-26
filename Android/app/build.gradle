@@ -1,18 +1,22 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'dagger.hilt.android.plugin'
+
+apply from: '../scripts/jacoco.gradle'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.3"
+    compileSdkVersion rootProject.compileSdkVersion
+    buildToolsVersion rootProject.buildToolsVersion
 
     defaultConfig {
         applicationId "io.github.utkan"
-        minSdkVersion 23
-        targetSdkVersion 29
+        minSdkVersion rootProject.minSdkVersion
+        targetSdkVersion rootProject.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
+//        multiDexEnabled = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -22,18 +26,123 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        freeCompilerArgs += ["-Xopt-in=kotlin.RequiresOptIn"]
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    buildFeatures {
+//        dataBinding true
+        viewBinding true
+    }
+
+    testOptions {
+        unitTests {
+            returnDefaultValues true
+            all {
+                jacoco {
+                    includeNoLocationClasses = true
+                }
+            }
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'README.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/ASL2.0'
+        exclude("META-INF/*.kotlin_module")
+    }
 }
 
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.core:core-ktx:1.3.1'
-    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation "androidx.core:core-ktx:${coreVersion}"
+    implementation "androidx.appcompat:appcompat:$supportLibVersion"
+    implementation "androidx.recyclerview:recyclerview:$recyclerViewVersion"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayoutVersion"
+    implementation "com.google.android.material:material:$materialVersion"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
-    implementation 'com.google.android.material:material:1.2.0'
-    testImplementation 'junit:junit:4.12'
+
+    implementation "androidx.activity:activity-ktx:$activityVersion"
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel:$lifecycleVersion")
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion"
+    implementation("androidx.lifecycle:lifecycle-extensions:$lifecycleVersion")
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleVersion"
+    implementation("androidx.lifecycle:lifecycle-reactivestreams-ktx:$xViewModelKtxVersion")
+
+    implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "androidx.room:room-ktx:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
+
+    implementation "androidx.paging:paging-runtime:$pagingVersion"
+
+    implementation("com.squareup.picasso:picasso:$picassoVersion")
+
+    implementation "com.google.dagger:hilt-android:$hiltVersion"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt "com.google.dagger:hilt-android-compiler:$hiltVersion"
+    kapt "androidx.hilt:hilt-compiler:$hiltJetpackVersion"
+
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofitVersion"
+    implementation "com.squareup.retrofit2:retrofit-mock:$retrofitVersion"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttpLoggingInterceptorVersion"
+
+    implementation "com.squareup.moshi:moshi-kotlin:$moshiVersion"
+    implementation "com.squareup.moshi:moshi-adapters:$moshiVersion"
+
+    implementation "com.jakewharton.timber:timber:$timberVersion"
+
+    implementation "io.arrow-kt:arrow-core:$arrowVersion"
+    implementation "io.arrow-kt:arrow-syntax:$arrowVersion"
+
+    implementation("com.jakewharton.rxbinding3:rxbinding:$rxBindingsVersion")
+    implementation("com.jakewharton.rxbinding3:rxbinding-appcompat:$rxBindingsVersion")
+
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.3.8'
+    testImplementation("org.mockito:mockito-core:$mockito")
+    testImplementation("org.mockito:mockito-inline:$mockito")
+    testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin")
+    testImplementation("io.mockk:mockk:$mockk")
+//    testImplementation("android.arch.core:core-testing:$coreTesting")
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+
+    //koin
+//    implementation "org.koin:koin-core:2.1.5"
+//    implementation "org.koin:koin-android:2.1.5"
+//    implementation "org.koin:koin-androidx-viewmodel:2.1.5"
+//    implementation "org.koin:koin-androidx-scope:2.1.5"
+
+//    androidTestImplementation 'androidx.test:core:1.2.0'
+
+    // AndroidJUnitRunner and JUnit Rules
+//    androidTestImplementation 'androidx.test:runner:1.2.0'
+//    androidTestImplementation 'androidx.test:rules:1.2.0'
+//
+//    // Assertions
+//    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+//    androidTestImplementation 'androidx.test.ext:truth:1.2.0'
+//    androidTestImplementation 'com.google.truth:truth:0.42'
+//    // Optional -- Hamcrest library
+//    androidTestImplementation 'org.hamcrest:hamcrest-library:2.1'
+    testImplementation 'junit:junit:4.13'
 
 }

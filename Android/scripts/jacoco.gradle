@@ -1,0 +1,74 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = rootProject.ext.jacoco
+}
+
+project.afterEvaluate {
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+
+    if (!productFlavors) productFlavors.add('')
+
+    productFlavors.each { productFlavorName ->
+        buildTypes.each { buildTypeName ->
+            def sourceName, sourcePath
+            if (!productFlavorName) {
+                sourceName = sourcePath = "${buildTypeName}"
+            } else {
+                sourceName = "${productFlavorName}${buildTypeName.capitalize()}"
+                sourcePath = "${productFlavorName}/${buildTypeName}"
+            }
+            def testTaskName = "test${sourceName.capitalize()}UnitTest"
+            task "${testTaskName}Coverage" (type:JacocoReport, dependsOn: "$testTaskName") {
+                group = "Reporting"
+                description = "Generate Jacoco coverage reports on the ${sourceName.capitalize()} build."
+
+                def excludes = ["**/*Activity*.*",
+                                "**/*Fragment*.*",
+                                "**/R.class",
+                                "**/R\$*.class",
+                                "**/MembersInjector*.*",
+                                "**/*MembersInjector*.*",
+                                "**/*_MembersInjector*.*",
+                                "**/*_Provide*Factory*.*",
+                                "**/*_Factory.*",
+                                "**/*Module.*",
+                                "**/*Module*.*",
+                                "**/*Module_*.*",
+                                "**/*Dagger.*",
+                                "**/*Dagger*",
+                                "**/BuildConfig.*",
+                                "**/*Dto.*",
+                                "**/*Adapter.*",
+                                "**/*ViewHolder.*",
+                                "**/*Entity.kt",
+                                "**/*_Impl.java",
+                                "**/*_Impl.*",
+                                "**/*Dao_Impl*",
+                                "**/*_Factory*",
+                                "**/*\$*\$*.*"]
+
+                classDirectories.setFrom(fileTree(
+                        dir: "${project.buildDir}/intermediates/classes/${sourcePath}",
+                        excludes: excludes
+                ) + fileTree(
+                        dir: "${project.buildDir}/tmp/kotlin-classes/${sourceName}",
+                        excludes: excludes
+                ))
+
+                def coverageSourceDirs = ["src/main/java"]
+                additionalSourceDirs.setFrom(files(coverageSourceDirs))
+                sourceDirectories.setFrom(files(coverageSourceDirs))
+                executionData.setFrom(files("${project.buildDir}/jacoco/${testTaskName}.exec"))
+
+                reports {
+                    xml.enabled = true
+                    csv.enabled = true
+                    html.enabled = true
+                    xml.destination file("${buildDir}/reports/jacoco/jacocoTestRepot${sourceName.capitalize()}.xml")
+                }
+            }
+        }
+    }
+}
