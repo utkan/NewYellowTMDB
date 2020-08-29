@@ -4,8 +4,8 @@ import arrow.core.left
 import arrow.core.right
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
-import io.github.utkan.data.network.MovieRemoteSource
 import io.github.utkan.DataFactory
+import io.github.utkan.data.network.MovieRemoteSource
 import io.github.utkan.data.network.dto.ConfigurationDto
 import io.github.utkan.data.network.dto.ImagesDto
 import io.github.utkan.data.repository.mapper.DatesMapper
@@ -13,15 +13,12 @@ import io.github.utkan.data.repository.mapper.MovieListMapper
 import io.github.utkan.data.repository.mapper.MovieMapper
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
 import org.junit.Test
-
-import org.junit.Assert.*
-import java.lang.IllegalArgumentException
 
 @ExperimentalCoroutinesApi
 class RepositoryTest {
     private val movieRemoteSource: MovieRemoteSource = mock()
-    private val input = DataFactory.MOVIE_LIST_DTO
     private val movieListMapper = MovieMapper()
     private val datesMapper = DatesMapper()
     private val mapper = MovieListMapper(
@@ -56,8 +53,8 @@ class RepositoryTest {
     fun `when remote source throws, result is right movies`() {
         runBlockingTest {
             // given
-            val config : ConfigurationDto= mock()
-            val images : ImagesDto = mock()
+            val config: ConfigurationDto = mock()
+            val images: ImagesDto = mock()
             val baseUrl = "https://any.any.any/"
             whenever(images.secureBaseUrl).thenReturn(baseUrl)
             whenever(config.images).thenReturn(images)
@@ -111,8 +108,8 @@ class RepositoryTest {
             // given
             val searchTerm = "any"
             val page = 1
-            val config : ConfigurationDto= mock()
-            val images : ImagesDto = mock()
+            val config: ConfigurationDto = mock()
+            val images: ImagesDto = mock()
             val baseUrl = "https://any.any.any/"
             whenever(images.secureBaseUrl).thenReturn(baseUrl)
             whenever(config.images).thenReturn(images)

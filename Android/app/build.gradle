@@ -121,15 +121,9 @@ dependencies {
     testImplementation("org.mockito:mockito-inline:$mockito")
     testImplementation("com.nhaarman.mockitokotlin2:mockito-kotlin:$mockitoKotlin")
     testImplementation("io.mockk:mockk:$mockk")
-//    testImplementation("android.arch.core:core-testing:$coreTesting")
+    testImplementation 'androidx.arch.core:core-testing:2.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-
-    //koin
-//    implementation "org.koin:koin-core:2.1.5"
-//    implementation "org.koin:koin-android:2.1.5"
-//    implementation "org.koin:koin-androidx-viewmodel:2.1.5"
-//    implementation "org.koin:koin-androidx-scope:2.1.5"
 
 //    androidTestImplementation 'androidx.test:core:1.2.0'
 
