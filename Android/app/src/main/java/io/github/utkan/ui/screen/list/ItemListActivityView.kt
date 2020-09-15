@@ -1,4 +1,4 @@
-package io.github.utkan.ui.screen
+package io.github.utkan.ui.screen.list
 
 import android.app.Activity
 import android.view.View
@@ -85,22 +85,23 @@ interface ItemListActivityView {
             addLoadStateListener(movieAdapter, itemListInc.progressBar)
             addLoadStateListener(movieSearchAdapter, itemListInc.progressBarSearch)
 
-            searchDisposable = viewBinding.searchView
-                .queryTextChangeEvents()
-                .subscribe({
-                    val searchTerm = it.queryText.toString()
-                    searchEvent.onNext(searchTerm)
-                    val empty = searchTerm.isEmpty()
-                    if (empty) {
-                        viewBinding.searchView.post {
-                            hideKeyBoard()
+            if (searchDisposable.isDisposed) {
+                searchDisposable = viewBinding.searchView
+                    .queryTextChangeEvents()
+                    .subscribe({
+                        val searchTerm = it.queryText.toString()
+                        searchEvent.onNext(searchTerm)
+                        val empty = searchTerm.isEmpty()
+                        if (empty) {
+                            viewBinding.searchView.post {
+                                hideKeyBoard()
+                            }
                         }
-                    }
-                    val searchItemList = viewBinding.itemListInc.searchItemList
-                    val itemList = viewBinding.itemListInc.itemList
-                    switchVisibility(empty, searchItemList, itemList)
-                }, { Timber.e(it) })
-
+                        val searchItemList = viewBinding.itemListInc.searchItemList
+                        val itemList = viewBinding.itemListInc.itemList
+                        switchVisibility(empty, searchItemList, itemList)
+                    }, { Timber.e(it) })
+            }
         }
 
         override suspend fun submitData(list: PagingData<MovieModel>) {
@@ -189,12 +190,14 @@ interface ItemListActivityView {
             openFragmentsDetail: (MovieViewItem) -> Unit,
             openActivityDetail: (MovieViewItem) -> Unit
         ): MovieAdapter {
-            return MovieAdapter(picasso) { item ->
+            return MovieAdapter(picasso, { item ->
                 if (twoPane) {
                     openFragmentsDetail(item)
                 } else {
                     openActivityDetail(item)
                 }
+            }) {
+                String.format(it ?: "", activity.resources.getString(R.string.backdrop_size_small))
             }
         }
     }

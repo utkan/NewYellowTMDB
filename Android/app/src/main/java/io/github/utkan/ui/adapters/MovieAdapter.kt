@@ -6,15 +6,18 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import io.github.utkan.R
 import io.github.utkan.databinding.MovieItemBinding
 import io.github.utkan.ui.MovieViewItem
-import io.github.utkan.ui.screen.MovieModel
+import io.github.utkan.ui.screen.list.MovieModel
 
 typealias OnMovieClickListener = (MovieViewItem) -> Unit
+typealias ImageUrlGenerator = (String?) -> String
 
 class MovieAdapter constructor(
     private val picasso: Picasso,
-    private val onMovieClickListener: OnMovieClickListener
+    private val onMovieClickListener: OnMovieClickListener,
+    private val imageUrlGenerator:ImageUrlGenerator
 ) : PagingDataAdapter<MovieModel, MovieAdapter.MovieViewHolder>(DIFF_CALLBACK) {
 
     override fun onBindViewHolder(holder: MovieViewHolder, position: Int) {
@@ -34,24 +37,27 @@ class MovieAdapter constructor(
         return MovieViewHolder(
             viewBinding = MovieItemBinding.inflate(LayoutInflater.from(parent.context), parent, false),
             picasso = picasso,
-            onMovieClickListener = onMovieClickListener
+            onMovieClickListener = onMovieClickListener,
+            imageUrlGenerator = imageUrlGenerator
         )
     }
 
     class MovieViewHolder(
         private val viewBinding: MovieItemBinding,
         private val picasso: Picasso,
-        private val onMovieClickListener: OnMovieClickListener
+        private val onMovieClickListener: OnMovieClickListener,
+        private val imageUrlGenerator: ImageUrlGenerator
     ) : RecyclerView.ViewHolder(viewBinding.root) {
         fun bind(movie: MovieViewItem) {
-            picasso
-                .load(movie.backdropUrl)
-                .into(viewBinding.movieImage)
-            viewBinding.movieTitle.text = movie.originalTitle
-            viewBinding.movieVoteCount.text = "Vote: ${movie.voteCount}"
-
-            viewBinding.root.setOnClickListener {
-                onMovieClickListener(movie)
+            viewBinding.apply {
+                picasso
+                    .load(imageUrlGenerator(movie.backdropUrl))
+                    .into(movieImage)
+                movieTitle.text = movie.originalTitle
+                movieVoteCount.text = root.resources.getString(R.string.vote_count, movie.voteCount.toString())
+                root.setOnClickListener {
+                    onMovieClickListener(movie)
+                }
             }
         }
     }

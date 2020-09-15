@@ -6,7 +6,6 @@ import arrow.core.right
 import io.github.utkan.common.Mapper
 import io.github.utkan.data.network.MovieRemoteSource
 import io.github.utkan.data.network.dto.ConfigurationDto
-import io.github.utkan.data.network.dto.ImagesDto
 import io.github.utkan.data.network.dto.MovieListDto
 import io.github.utkan.data.repository.model.Movie
 import io.github.utkan.data.repository.model.MovieList
@@ -39,9 +38,7 @@ interface Repository {
 
         private suspend fun mapUrl(mappedMovies: MovieList): MovieList {
             val url = getBaseUrl()
-            // TODO:make it device dimen specific
-            val dimen = "w300"
-            return mappedMovies.copy(movies = mappedMovies.movies.map { buildUrl(it, url, dimen) })
+            return mappedMovies.copy(movies = mappedMovies.movies.map { buildUrl(it, url) })
         }
 
         private suspend fun getBaseUrl(): String {
@@ -51,8 +48,7 @@ interface Repository {
 
         private fun buildUrl(
             movie: Movie,
-            url: String?,
-            dimen: String
-        ) = movie.copy(backdropUrl = url + dimen + movie.backdropUrl)
+            url: String?
+        ) = movie.copy(backdropUrl = "$url%s${movie.backdropUrl}")
     }
 }

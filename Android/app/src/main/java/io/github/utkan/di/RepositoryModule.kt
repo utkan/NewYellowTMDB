@@ -1,9 +1,11 @@
 package io.github.utkan.di
 
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import io.github.utkan.LoggerConfigurator
 import io.github.utkan.common.Mapper
 import io.github.utkan.data.network.MovieRemoteSource
 import io.github.utkan.data.network.dto.MovieListDto
@@ -21,5 +23,13 @@ object RepositoryModule {
         movieRemoteSource = movieRemoteSource,
         movieListMapper = movieListMapper
     )
+}
+
+
+@InstallIn(ApplicationComponent::class)
+@Module
+abstract class ApplicationModule {
+    @Binds
+    abstract fun bindsRepository(impl: LoggerConfigurator.Impl): LoggerConfigurator
 }
 

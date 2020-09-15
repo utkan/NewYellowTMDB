@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".ui.screen.ItemListActivity">
+    tools:context=".ui.screen.list.ItemListActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/app_bar"
@@ -21,7 +21,7 @@
 
             <SearchView
                 android:id="@+id/searchView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:iconifiedByDefault="false"
                 android:queryHint="Search"

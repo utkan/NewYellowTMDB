@@ -7,18 +7,22 @@ import retrofit2.http.Query
 
 interface MovieService {
 
-    @GET("3/movie/now_playing")
+    @GET("$VERSION/movie/now_playing")
     suspend fun getNowPlayingMovies(
         @Query("page") page: Int
     ): MovieListDto
 
-    @GET("3/search/movie")
+    @GET("$VERSION/search/movie")
     suspend fun getMovieSearchResults(
         @Query("query") query: String,
         @Query("page") page: Int
     ): MovieListDto
 
 
-    @GET("3/configuration")
+    @GET("$VERSION/configuration")
     suspend fun getConfiguration(): ConfigurationDto
+
+    companion object {
+        private const val VERSION = "3"
+    }
 }

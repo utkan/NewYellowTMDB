@@ -1,14 +1,19 @@
 package io.github.utkan.di
 
+import android.content.Context
 import androidx.paging.PagingConfig
 import androidx.paging.PagingSource
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.squareup.picasso.LruCache
+import com.squareup.picasso.Picasso
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ActivityContext
+import dagger.hilt.android.qualifiers.ApplicationContext
 import io.github.utkan.BuildConfig
 import io.github.utkan.common.Mapper
 import io.github.utkan.data.network.ApiKeyInterceptor
@@ -129,10 +134,17 @@ object NetworkProvidesModule {
     ): Retrofit {
         val moshi = Moshi.Builder().add(KotlinJsonAdapterFactory()).build()
         return Retrofit.Builder()
-//        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .baseUrl("https://api.themoviedb.org/")
             .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .build()
+    }
+
+    @Provides
+    fun providePicasso(@ApplicationContext context: Context): Picasso {
+        return Picasso.Builder(context)
+            .indicatorsEnabled(BuildConfig.DEBUG)
+            .memoryCache(LruCache(context))
             .build()
     }
 

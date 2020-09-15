@@ -1,17 +1,23 @@
-package io.github.utkan.ui.screen
+package io.github.utkan.ui.screen.detail
 
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
+import dagger.hilt.android.AndroidEntryPoint
 import io.github.utkan.R
 import io.github.utkan.ui.MovieViewItem
+import javax.inject.Inject
 
-//TODO: extract view
-class ItemDetailFragment : Fragment() {
+@AndroidEntryPoint
+class ItemDetailFragment : Fragment(R.layout.item_detail) {
+
+    @Inject
+    lateinit var picasso: Picasso
+
+    @Inject
+    lateinit var fragmentView: ItemDetailFragmentView
 
     private val item: MovieViewItem? by lazy {
         arguments?.let {
@@ -23,20 +29,9 @@ class ItemDetailFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.item_detail, container, false)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        item?.let {
-            view.findViewById<TextView>(R.id.item_title).text = it.originalTitle
-            view.findViewById<TextView>(R.id.item_detail).text = it.overview
-            view.findViewById<TextView>(R.id.item_rating).text = it.voteCount.toString()
-        }
+        fragmentView.bind(view, item)
     }
 
     companion object {

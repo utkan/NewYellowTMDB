@@ -2,4 +2,7 @@
     <string name="app_name">TMDbIsTheNeuGelb</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="retry">Retry</string>
+    <string name="backdrop_size_small">w300</string>
+    <string name="backdrop_size">w780</string>
+    <string name="vote_count">Vote: %s</string>
 </resources>

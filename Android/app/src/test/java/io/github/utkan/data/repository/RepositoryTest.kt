@@ -72,7 +72,7 @@ class RepositoryTest {
             // then
             val mapped = mapper.map(DataFactory.MOVIE_LIST_DTO)
             assertEquals(
-                mapped.copy(movies = mapped.movies.map { it.copy(backdropUrl = baseUrl + "w300" + it.backdropUrl) }).right(),
+                mapped.copy(movies = mapped.movies.map { it.copy(backdropUrl = baseUrl + "%s" + it.backdropUrl) }).right(),
                 output
             )
         }
@@ -126,7 +126,7 @@ class RepositoryTest {
             // then
             val mapped = mapper.map(DataFactory.MOVIE_LIST_DTO)
             assertEquals(
-                mapped.copy(movies = mapped.movies.map { it.copy(backdropUrl = baseUrl + "w300" + it.backdropUrl) }).right(),
+                mapped.copy(movies = mapped.movies.map { it.copy(backdropUrl = baseUrl + "%s" + it.backdropUrl) }).right(),
                 output
             )
         }

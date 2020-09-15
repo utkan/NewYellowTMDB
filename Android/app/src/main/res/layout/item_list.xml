@@ -9,7 +9,7 @@
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
     android:showDividers="middle"
-    tools:context=".ui.screen.ItemListActivity">
+    tools:context=".ui.screen.list.ItemListActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"

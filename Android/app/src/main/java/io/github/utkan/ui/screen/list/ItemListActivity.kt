@@ -1,4 +1,4 @@
-package io.github.utkan.ui.screen
+package io.github.utkan.ui.screen.list
 
 import android.os.Bundle
 import androidx.activity.viewModels
@@ -7,6 +7,8 @@ import androidx.lifecycle.lifecycleScope
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.utkan.R
 import io.github.utkan.ui.MovieViewItem
+import io.github.utkan.ui.screen.detail.ItemDetailActivity
+import io.github.utkan.ui.screen.detail.ItemDetailFragment
 import io.reactivex.disposables.Disposables
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
@@ -33,7 +35,10 @@ class ItemListActivity : AppCompatActivity() {
 
         itemListView.setup(
             openActivityDetail = { startActivity(ItemDetailActivity.intent(this, it)) },
-            openFragmentsDetail = { openDetailFragment(it) }
+            openFragmentsDetail = {
+                itemListView.hideKeyBoard()
+                openDetailFragment(it)
+            }
         )
 
         movieListJob?.cancel()
@@ -43,7 +48,7 @@ class ItemListActivity : AppCompatActivity() {
                 itemListView.submitData(it)
             }
         }
-
+        searchDisposable.dispose()
         searchDisposable = itemListView
             .onSearch()
             .subscribe({ search(it) }, { Timber.e(it) })
